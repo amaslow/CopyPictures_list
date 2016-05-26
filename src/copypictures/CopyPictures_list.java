@@ -50,6 +50,7 @@ public class CopyPictures_list extends javax.swing.JFrame {
         outItemComboBox = new javax.swing.JComboBox();
         jSeparator7 = new javax.swing.JSeparator();
         pictureNumberCheckBox = new javax.swing.JCheckBox();
+        pictureTextCheckBox = new javax.swing.JCheckBox();
         outExampleLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         listStartButton = new javax.swing.JButton();
@@ -108,11 +109,6 @@ public class CopyPictures_list extends javax.swing.JFrame {
         resolutionComboBox.setMaximumRowCount(2);
         resolutionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "HR", "LR" }));
         resolutionComboBox.setToolTipText("choose description between Item number, SAP number and EAN code");
-        resolutionComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resolutionComboBoxActionPerformed(evt);
-            }
-        });
         getContentPane().add(resolutionComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, -1, -1));
         getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 400, 10));
 
@@ -154,24 +150,23 @@ public class CopyPictures_list extends javax.swing.JFrame {
         jLabel2.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 180, -1, 18));
 
-        outItemComboBox.setMaximumRowCount(3);
-        outItemComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item", "SAP", "EAN" }));
-        outItemComboBox.setSelectedIndex(1);
-        outItemComboBox.setToolTipText("choose description between Item number, SAP number and EAN code");
+        outItemComboBox.setMaximumRowCount(4);
+        outItemComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item", "SAP", "SAP_no dots", "EAN" }));
+        outItemComboBox.setToolTipText("choose description between Item number, SAP (with or without dots) number and EAN code");
         outItemComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 outItemComboBoxActionPerformed(evt);
             }
         });
-        getContentPane().add(outItemComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, -1, -1));
+        getContentPane().add(outItemComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 200, -1, -1));
 
         jSeparator7.setOrientation(javax.swing.SwingConstants.VERTICAL);
         getContentPane().add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 180, 5, 50));
 
-        pictureNumberCheckBox.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
+        pictureNumberCheckBox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         pictureNumberCheckBox.setSelected(true);
         pictureNumberCheckBox.setText("picture number");
-        pictureNumberCheckBox.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        pictureNumberCheckBox.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pictureNumberCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         pictureNumberCheckBox.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         pictureNumberCheckBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -184,7 +179,20 @@ public class CopyPictures_list extends javax.swing.JFrame {
                 pictureNumberCheckBoxActionPerformed(evt);
             }
         });
-        getContentPane().add(pictureNumberCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 200, 90, -1));
+        getContentPane().add(pictureNumberCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 190, 100, -1));
+
+        pictureTextCheckBox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        pictureTextCheckBox.setText("_picture");
+        pictureTextCheckBox.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        pictureTextCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        pictureTextCheckBox.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        pictureTextCheckBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pictureTextCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pictureTextCheckBoxActionPerformed(evt);
+            }
+        });
+        getContentPane().add(pictureTextCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 100, -1));
 
         outExampleLabel.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         outExampleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -226,6 +234,9 @@ public class CopyPictures_list extends javax.swing.JFrame {
     String mainfolder = "G:\\Product Content\\PRODUCTS";
 
     private void label(String sapNodot, String itemNo, String ean, Integer p, JFileChooser dest, File source) throws IOException {
+
+        String sapWdot = sapNodot.substring(0, 2) + "." + sapNodot.substring(2, 5) + "." + sapNodot.substring(5, 7);
+
         String text = "";
         if (outTextCheckBox.isSelected()) {
             text = outTextField.getText() + "_";
@@ -237,6 +248,9 @@ public class CopyPictures_list extends javax.swing.JFrame {
                 description = itemNo;
                 break;
             case "SAP":
+                description = sapWdot;
+                break;
+            case "SAP_no dots":
                 description = sapNodot;
                 break;
             case "EAN":
@@ -251,8 +265,15 @@ public class CopyPictures_list extends javax.swing.JFrame {
             pictureNumber = "";
         }
 
+        String pictureText = "";
+        if (pictureTextCheckBox.isSelected()) {
+            pictureText = "_picture";
+        } else {
+            pictureText = "";
+        }
+
         File subdir = dest.getSelectedFile();
-        File output = new File(subdir + "\\" + text + description + pictureNumber + ".jpg");
+        File output = new File(subdir + "\\" + text + description + pictureNumber + pictureText + ".jpg");
 
         if (!subdir.exists()) {
             subdir.mkdir();
@@ -423,9 +444,12 @@ public class CopyPictures_list extends javax.swing.JFrame {
                 description = "HL120";
                 break;
             case 1:
-                description = "1003676";
+                description = "10.036.76";
                 break;
             case 2:
+                description = "1003676";
+                break;
+            case 3:
                 description = "8711658257747";
                 break;
         }
@@ -433,7 +457,11 @@ public class CopyPictures_list extends javax.swing.JFrame {
         if (pictureNumberCheckBox.isSelected()) {
             pictureNumber = "_2";
         }
-        outExampleLabel.setText("Example:   " + text + description + pictureNumber + ".jpg");
+        String pictureText = "";
+        if (pictureTextCheckBox.isSelected()) {
+            pictureText = "_picture";
+        }
+        outExampleLabel.setText("Example:   " + text + description + pictureNumber + pictureText + ".jpg");
     }//GEN-LAST:event_outItemComboBoxActionPerformed
 
     private void outTextCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outTextCheckBoxActionPerformed
@@ -447,9 +475,12 @@ public class CopyPictures_list extends javax.swing.JFrame {
                 description = "HL120";
                 break;
             case 1:
-                description = "1003676";
+                description = "10.036.76";
                 break;
             case 2:
+                description = "1003676";
+                break;
+            case 3:
                 description = "8711658257747";
                 break;
         }
@@ -457,7 +488,11 @@ public class CopyPictures_list extends javax.swing.JFrame {
         if (pictureNumberCheckBox.isSelected()) {
             pictureNumber = "_2";
         }
-        outExampleLabel.setText("Example:   " + text + description + pictureNumber + ".jpg");
+        String pictureText = "";
+        if (pictureTextCheckBox.isSelected()) {
+            pictureText = "_picture";
+        }
+        outExampleLabel.setText("Example:   " + text + description + pictureNumber + pictureText + ".jpg");
     }//GEN-LAST:event_outTextCheckBoxActionPerformed
 
     private void pictureNumberCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pictureNumberCheckBoxActionPerformed
@@ -472,9 +507,12 @@ public class CopyPictures_list extends javax.swing.JFrame {
                 description = "HL120";
                 break;
             case 1:
-                description = "1003676";
+                description = "10.036.76";
                 break;
             case 2:
+                description = "1003676";
+                break;
+            case 3:
                 description = "8711658257747";
                 break;
         }
@@ -482,18 +520,50 @@ public class CopyPictures_list extends javax.swing.JFrame {
         if (pictureNumberCheckBox.isSelected()) {
             pictureNumber = "_2";
         }
-        outExampleLabel.setText("Example:   " + text + description + pictureNumber + ".jpg");
+        String pictureText = "";
+        if (pictureTextCheckBox.isSelected()) {
+            pictureText = "_picture";
+        }
+        outExampleLabel.setText("Example:   " + text + description + pictureNumber + pictureText + ".jpg");
     }//GEN-LAST:event_pictureNumberCheckBoxActionPerformed
-
-    private void resolutionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolutionComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_resolutionComboBoxActionPerformed
 
     private void allpictRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allpictRadioButtonActionPerformed
         if (allpictRadioButton.isSelected()) {
             pictureNumberCheckBox.setSelected(rootPaneCheckingEnabled);
         }
     }//GEN-LAST:event_allpictRadioButtonActionPerformed
+
+    private void pictureTextCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pictureTextCheckBoxActionPerformed
+        String text = "";
+        if (outTextCheckBox.isSelected()) {
+            text = resolutionComboBox.getSelectedItem().toString() + "_";
+        }
+
+        String description = "";
+        switch (outItemComboBox.getSelectedIndex()) {
+            case 0:
+                description = "HL120";
+                break;
+            case 1:
+                description = "10.036.76";
+                break;
+            case 2:
+                description = "1003676";
+                break;
+            case 3:
+                description = "8711658257747";
+                break;
+        }
+        String pictureNumber = "";
+        if (pictureNumberCheckBox.isSelected()) {
+            pictureNumber = "_2";
+        }
+        String pictureText = "";
+        if (pictureTextCheckBox.isSelected()) {
+            pictureText = "_picture";
+        }
+        outExampleLabel.setText("Example:   " + text + description + pictureNumber + pictureText + ".jpg");
+    }//GEN-LAST:event_pictureTextCheckBoxActionPerformed
 
     /**
      *
@@ -551,6 +621,7 @@ public class CopyPictures_list extends javax.swing.JFrame {
     private javax.swing.JCheckBox outTextCheckBox;
     private javax.swing.JTextField outTextField;
     private javax.swing.JCheckBox pictureNumberCheckBox;
+    private javax.swing.JCheckBox pictureTextCheckBox;
     private javax.swing.ButtonGroup picturesGroup;
     private javax.swing.JComboBox resolutionComboBox;
     private javax.swing.JLabel resolutionLabel;
