@@ -231,7 +231,7 @@ public class CopyPictures_list extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    String mainfolder = "X:\\Smartwares - Product Content\\PRODUCTS";
+    String mainfolder = "\\\\172.16.55.197\\design\\Smartwares - Product Content\\PRODUCTS";
 
     private void label(String sapNodot, String itemNo, String ean, Integer p, JFileChooser dest, File source) throws IOException {
 
